@@ -5,23 +5,29 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* 게임 커스텀 팔레트 — 아래 shadcn 테마(다크 변형) 톤에 맞춰 유도 */
-  --bg: oklch(0.178 0 180); /* 전체 배경 = 테마 dark background */
-  --board-bg: oklch(0.11 0 180); /* 보드 안쪽 어두운 바닥 */
-  --panel: oklch(0.269 0 180); /* 카드/패널 배경 = 테마 dark muted */
-  --line: oklch(0.4 0 180 / 35%); /* 테두리 */
-  --text: oklch(0.949 0 180); /* 기본 텍스트 = 테마 dark foreground */
-  --text-dim: oklch(0.792 0 180 / 55%);
-  --blue: oklch(0.611 0.122 157.749); /* 강조 (퀴즈/확인) = 테마 dark primary */
+  /* 게임 커스텀 팔레트 — 아래 shadcn 테마(라이트 변형) 톤에 맞춰 유도 */
+  --bg: oklch(0.96 0 180); /* 전체 배경 = 테마 light background */
+  --board-bg: #228cca; /* 보드 안쪽 = 연한 바다색. 다크모드에서도 안 바뀐다(.dark에서 재정의 안 함) */
+  --ocean-light: #216c8d; /* 보드 배경 그라데이션 상단 (밝은 수면) */
+  --ocean-deep: #0168ac; /* 보드 배경 그라데이션 하단 (살짝 깊은 바다, 너무 진하지 않게) */
+  /* 보드 표면 위에 직접 얹히는 안내문구/십자선 전용 색 — 보드 자체가 다크모드 대상이 아니라서
+     전역 --line/--text-dim과 분리해 둔다(안 그러면 다크모드에서 밝은 보드 위에 밝은 텍스트가 얹혀 안 보임). */
+  --board-line: oklch(0.5 0 180 / 35%);
+  --board-text-dim: oklch(0.4 0 180 / 75%);
+  --panel: oklch(1 0 180); /* 카드/패널 배경 = 테마 light muted */
+  --line: oklch(0.5 0 180 / 35%); /* 테두리 */
+  --text: oklch(0.22 0 180); /* 기본 텍스트 = 테마 light foreground */
+  --text-dim: oklch(0.4 0 180 / 75%);
+  --blue: oklch(0.45 0.13 157.749); /* 강조 (퀴즈/확인) = 테마 light primary */
   --green-1: oklch(0.32 0.07 157.749); /* 보조 강조 (보상카드) */
-  --green-2: oklch(0.55 0.12 157.749); /* 보조 강조 2 (성공) */
+  --green-2: oklch(0.4 0.12 157.749); /* 보조 강조 2 (성공) */
   --rose: oklch(0.552 0.164 24.213); /* 상대 손패 뒷면 = 테마 destructive */
 
-  --amber: oklch(0.611 0.122 157.749);
-  --emerald: oklch(0.75 0.1 157.749);
+  --amber: oklch(0.45 0.13 157.749);
+  --emerald: oklch(0.48 0.1 157.749);
 
-  /* shadcn palette — light variant (see .dark below for the variant actually
-     used by this app, which has no light/dark toggle). */
+  /* shadcn palette — light variant. app/layout.tsx puts "dark" on <html> unconditionally,
+     so .dark below is what actually renders; these :root values are the fallback/base layer. */
   --radius: 0.5rem;
   --background: oklch(1 0 180);
   --foreground: oklch(0.252 0 180);
@@ -118,6 +124,50 @@ body {
   animation: draw-fly 0.65s ease-in forwards;
 }
 
+/* 보드 배경 = 바다. 결이 다른 두 사선 파도 레이어를 서로 다른 속도로 흘려
+   물살이 겹쳐 흐르는 느낌을 낸다. background-position만 움직이므로 가볍다. */
+@keyframes wave-drift-a {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 220px 110px;
+  }
+}
+@keyframes wave-drift-b {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -180px 130px;
+  }
+}
+.ocean-surface {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: radial-gradient(120% 90% at 25% 0%, var(--ocean-light) 0%, transparent 60%),
+    linear-gradient(165deg, var(--ocean-light) 0%, var(--board-bg) 45%, var(--ocean-deep) 100%);
+}
+.ocean-surface::before,
+.ocean-surface::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background-repeat: repeat;
+  mix-blend-mode: screen;
+}
+.ocean-surface::before {
+  opacity: 0.3;
+  background-image: repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.4) 0 2px, transparent 2px 46px);
+  animation: wave-drift-a 15s linear infinite;
+}
+.ocean-surface::after {
+  opacity: 0.18;
+  background-image: repeating-linear-gradient(65deg, rgba(255, 255, 255, 0.35) 0 1.5px, transparent 1.5px 60px);
+  animation: wave-drift-b 21s linear infinite;
+}
+
 @theme inline {
   --font-heading: var(--font-sans);
   --font-sans: var(--font-sans);
@@ -155,6 +205,14 @@ body {
 }
 
 .dark {
+  /* 게임 커스텀 팔레트 — 화면 전체를 다크로. board-bg/ocean-*는 일부러 여기서 재정의하지
+     않는다: 보드/판은 다크모드 대상에서 제외하고 항상 밝은 바다색 그대로 유지한다. */
+  --bg: oklch(0.178 0 180);
+  --panel: oklch(0.24 0 180);
+  --line: oklch(0.75 0 180 / 20%);
+  --text: oklch(0.95 0 180);
+  --text-dim: oklch(0.75 0 180 / 75%);
+
   --radius: 0.5rem;
   --background: oklch(0.178 0 180);
   --foreground: oklch(0.949 0 180);

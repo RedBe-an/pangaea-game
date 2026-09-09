@@ -111,21 +111,24 @@ export const PangaeaBoard = memo(function PangaeaBoard({
   return (
     // 고정 캔버스(1920x1080) 안에 항상 리플로우 없이 들어가야 하므로 aspect-ratio가 아닌
     // 고정 px 크기를 쓴다 (322:416 비율 유지).
-    <div className="relative mx-auto h-[800px] w-[1200px] shrink-0 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--board-bg)]">
-      {/* map-grid-layer: 크로스헤어 가이드 + 방사형 글로우.
+    <div className="relative mx-auto h-[800px] w-[1200px] shrink-0 overflow-hidden rounded-2xl border border-[var(--board-line)] bg-[var(--board-bg)]">
+      {/* 판이 떠 있는 바다. 흐르는 파도 결은 순수 배경 애니메이션이라 판/조각 렌더와 무관하게
+          독립적으로 돈다. */}
+      <div className="ocean-surface pointer-events-none absolute inset-0" />
+      {/* map-grid-layer: 크로스헤어 가이드 + 방사형 글로우(수면 위 햇빛 느낌).
           내용이 고정된 장식이라 별도 합성 레이어로 올려둔다 — 조각이 700ms 동안 움직일 때
           이 큰 blur를 매 프레임 다시 그리지 않게 된다 (보이는 결과는 동일). */}
       <div
         className="pointer-events-none absolute inset-0 flex items-center justify-center"
         style={{ transform: "translateZ(0)" }}
       >
-        <div className="size-[70%] rounded-full bg-[var(--blue)]/[0.06] blur-3xl" />
-        <div className="absolute size-[100%] rounded-full bg-[var(--green-2)]/[0.05] blur-3xl" />
+        <div className="size-[70%] rounded-full bg-white/[0.25] blur-3xl" />
+        <div className="absolute size-[100%] rounded-full bg-[var(--ocean-deep)]/[0.07] blur-3xl" />
       </div>
-      <div className="pointer-events-none absolute left-0 top-1/2 h-px w-full bg-[var(--line)]/60" />
-      <div className="pointer-events-none absolute left-1/2 top-0 h-full w-px bg-[var(--line)]/60" />
+      <div className="pointer-events-none absolute left-0 top-1/2 h-px w-full bg-[var(--board-line)]/60" />
+      <div className="pointer-events-none absolute left-1/2 top-0 h-full w-px bg-[var(--board-line)]/60" />
 
-      <p className="absolute left-3 top-3 z-10 text-lg text-[var(--text-dim)]">
+      <p className="absolute left-3 top-3 z-10 text-lg text-[var(--board-text-dim)]">
         {stage === "assemble"
           ? "1단계 — 조각을 모아 로라시아와 곤드와나를 만드세요"
           : "2단계 — 테티스 해를 닫아 두 초대륙을 합치세요"}
@@ -207,7 +210,7 @@ export const PangaeaBoard = memo(function PangaeaBoard({
                   key={i}
                   d={d}
                   fill={shape.color}
-                  fillOpacity={isDone ? 1 : 0.55}
+                  fillOpacity={1}
                   stroke={isSelected ? "#ffffff" : "#000000"}
                   strokeOpacity={isSelected ? 0.9 : 0.35}
                   strokeWidth={isSelected ? 1.2 : 0.5}

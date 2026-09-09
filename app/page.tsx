@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
@@ -65,11 +66,19 @@ export default function HomePage() {
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
         <div className="size-[600px] rounded-full bg-primary/5 blur-3xl" />
       </div>
-      <div className="pointer-events-none absolute left-0 top-1/2 h-px w-full bg-white/5" />
-      <div className="pointer-events-none absolute left-1/2 top-0 h-full w-px bg-white/5" />
+      <div className="pointer-events-none absolute left-0 top-1/2 h-px w-full bg-foreground/5" />
+      <div className="pointer-events-none absolute left-1/2 top-0 h-full w-px bg-foreground/5" />
 
-      <Card className="relative w-full max-w-sm border border-primary/40 shadow-[0px_6px_24px_-6px_rgba(0,0,0,0.6)]">
+      <Card className="relative w-full max-w-sm border border-primary/40 shadow-[0px_6px_24px_-6px_rgba(0,0,0,0.15)]">
         <CardHeader className="text-center">
+          <Image
+            src="/P-removebg-preview.png"
+            alt="판게아 로고"
+            width={104}
+            height={104}
+            className="mx-auto mb-2"
+            priority
+          />
           <CardTitle className="text-2xl font-bold tracking-tight">판게아</CardTitle>
           <CardDescription className="text-xs">
             퀴즈를 맞혀 조각을 모아 로라시아와 곤드와나를 만들고, 두 초대륙을 충돌시켜 판게아를 완성하세요.
@@ -94,9 +103,9 @@ export default function HomePage() {
           </Button>
 
           <div className="flex items-center gap-3 text-[10px] uppercase tracking-widest text-muted-foreground">
-            <div className="h-px flex-1 bg-white/10" />
+            <div className="h-px flex-1 bg-foreground/10" />
             또는
-            <div className="h-px flex-1 bg-white/10" />
+            <div className="h-px flex-1 bg-foreground/10" />
           </div>
 
           <div className="flex gap-2">

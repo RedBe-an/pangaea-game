@@ -114,7 +114,7 @@ export default function TestUiPage() {
           variant="outline"
           size="sm"
           onClick={() => reset()}
-          className="h-auto rounded px-2 py-1 text-xs text-[var(--text-dim)] hover:bg-white/5"
+          className="h-auto rounded px-2 py-1 text-xs text-[var(--text-dim)] hover:bg-foreground/5"
         >
           다시 시작
         </Button>
@@ -130,7 +130,7 @@ export default function TestUiPage() {
               setError("");
             }}
             style={{ borderColor: viewingPlayerId === p.id ? SEAT_COLORS[i % SEAT_COLORS.length] : "var(--line)" }}
-            className="h-auto rounded bg-black/30 px-2 py-1 text-xs"
+            className="h-auto rounded bg-foreground/10 px-2 py-1 text-xs"
           >
             <span style={{ color: SEAT_COLORS[i % SEAT_COLORS.length] }}>{p.name}</span>
             {p.id === currentPlayerId && <span className="ml-1 text-[var(--text-dim)]">턴</span>}
